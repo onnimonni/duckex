@@ -16,7 +16,7 @@ Add `duckex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:duckex, github: "http://github.com/promeduck/duckex"}
+    {:duckex, github: "promeduck/duckex"}
   ]
 end
 ```
