@@ -169,6 +169,7 @@ defmodule Duckex do
       registry configured for connection
     + `:core`
     + `:nightly` - equivalent of `core_nightly` from DuckDB
+    + `:community` - equivalent of `community` from DuckDB
     + String representing URL from which the extension should be installed
   - `:force` - forcefully install extension, even when it is already installed.
     Can be used to update extension.
@@ -194,6 +195,7 @@ defmodule Duckex do
       case opts[:source] do
         :core -> " FROM core"
         :nightly -> " FROM core_nightly"
+        :community -> " FROM community"
         nil -> ""
         :default -> ""
         repo when is_binary(repo) -> " FROM '#{escape(repo)}'"
