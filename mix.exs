@@ -70,7 +70,7 @@ defmodule Duckex.MixProject do
   defp native_build(_args) do
     IO.puts("Building Rust native binary...")
 
-    File.mkdir_p!("priv")
+    File.mkdir_p!("priv/native")
 
     {result, exit_code} = System.cmd("cargo", ["build", "--release"])
     IO.puts(result)
