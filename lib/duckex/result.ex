@@ -28,7 +28,9 @@ defmodule Duckex.Result do
     [decode_val(value, type) | decode_row(vs, cs)]
   end
 
-  defp decode_val(us, "Timestamp(" <> _) do
+  defp decode_val(nil, _type), do: nil
+
+  defp decode_val(us, "Timestamp(" <> _) when is_integer(us) do
     DateTime.from_unix!(us, :microsecond)
   end
 

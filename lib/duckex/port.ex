@@ -35,8 +35,19 @@ defmodule Duckex.Port do
   ## ------------------------------------------------------------------
 
   @impl true
-  def init(_opts) do
-    cmd = get_binary_path()
+  def init(opts) do
+    binary_path = get_binary_path()
+    require Logger
+    Logger.debug("Starting the duckex: #{inspect(opts)}")
+    # Attach to memory if the ducklake option is present
+    database =
+      cond do
+        opts[:ducklake] -> ":memory:"
+        true -> Keyword.get(opts, :database, ":memory:")
+      end
+
+    # Build command with database path as argument
+    cmd = "#{binary_path} #{database}"
 
     port =
       Port.open({:spawn, cmd}, [
@@ -53,6 +64,8 @@ defmodule Duckex.Port do
         caller: nil,
         buf: []
       }
+
+    Logger.debug("Started Duckex port with database: #{database}")
 
     {:ok, state}
   end
@@ -76,7 +89,7 @@ defmodule Duckex.Port do
            |> IO.iodata_to_binary()
            |> JSON.decode() do
         {:ok, res} ->
-          Logger.debug("duckex <- #{inspect(res)}", domain: [:duckex, :receive])
+          Logger.debug("duckex <- #{inspect(res)}")
 
           {:ok, res}
 
@@ -109,7 +122,7 @@ defmodule Duckex.Port do
   end
 
   defp send_command(port, command) do
-    Logger.debug("duckex -> #{inspect(command)}", domain: [:duckex, :send])
+    Logger.debug("duckex -> #{inspect(command)}")
 
     msg_bin = JSON.encode!(command)
 

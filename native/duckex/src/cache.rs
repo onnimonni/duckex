@@ -44,8 +44,8 @@ impl<T> Cache<T> {
         let _ = self.storage[idx].take();
     }
 
-    pub(crate) fn get_mut(&mut self, idx: usize) -> Option<&mut T> {
-        self.storage[idx].as_mut()
+    pub(crate) fn get_ref(&self, idx: usize) -> Option<&T> {
+        self.storage[idx].as_ref()
     }
 }
 

@@ -88,6 +88,7 @@ defmodule Duckex do
   @spec prepare(DBConnection.conn(), String.t(), list()) ::
           {:ok, Query.t()} | {:error, Error.t()}
   def prepare(conn, statement, opts \\ []) do
+    require Logger
     DBConnection.prepare(conn, %Query{query: statement}, opts)
   end
 
@@ -121,7 +122,7 @@ defmodule Duckex do
 
   @spec query(DBConnection.conn(), String.t(), list(), list()) ::
           {:ok, Result.t()} | {:error, Error.t()}
-  def query(conn, statement, params, opts \\ []) do
+  def query(conn, statement, params \\ [], opts \\ []) do
     with {:ok, query, result} <- prepare_execute(conn, statement, params, opts),
          {:ok, _} <- close(conn, query) do
       {:ok, result}
@@ -129,7 +130,7 @@ defmodule Duckex do
   end
 
   @spec query!(DBConnection.conn(), String.t(), list(), list()) :: Result.t()
-  def query!(conn, statement, params, opts \\ []) do
+  def query!(conn, statement, params \\ [], opts \\ []) do
     case query(conn, statement, params, opts) do
       {:ok, result} -> result
       {:error, error} -> raise error
@@ -215,8 +216,9 @@ defmodule Duckex do
     path = escape(path)
     as = if val = opts[:as], do: " AS #{val}"
     options = format_attach_options(opts[:options])
+    options_part = if options == "", do: "", else: " (#{options})"
 
-    query(conn, "ATTACH '#{path}'#{as} (#{options})", [], conn_opts)
+    query(conn, "ATTACH '#{path}'#{as}#{options_part}", [], conn_opts)
   end
 
   def attach!(conn, path, opts \\ [], conn_opts \\ []) do
@@ -234,7 +236,7 @@ defmodule Duckex do
       {_key, false} -> []
       {key, true} -> ["#{key}"]
       {key, value} when is_atom(value) -> ["#{key} #{value}"]
-      {key, value} -> ["#{key} '#{escape(to_string(value))}'"]
+      {key, value} -> ["#{key} '#{String.replace(to_string(value), "'", "''")}'"]
     end)
     |> Enum.join(", ")
   end
