@@ -36,3 +36,43 @@ duckex-*.tar
 /priv/native/duckex
 /priv/native/*.so
 /tmp/
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
+# DuckDB database files
+*.duckdb
+*.duckdb.wal
+
+# Sample Phoenix database files
+sample_phoenix/*.ducklake
+sample_phoenix/*.ducklake.files/
+sample_phoenix/*.ducklake.wal
+
+# Sample Phoenix applications
+sample_phoenix/
+sample_phoenix_postgres/
+
+# Ecto directories (separate repos)
+ecto/
+ecto_sql/
+ecto_duckdb/
